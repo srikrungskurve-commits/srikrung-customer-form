@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Srikrung Customer Form</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans Thai", sans-serif;
+      background: #f4f8f7;
+      color: #1f2937;
+    }
+
+    .container {
+      max-width: 520px;
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      text-align: center;
+      font-size: 26px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #667085;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-top: 16px;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d0d5dd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #16a34a;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 24px;
+      padding: 14px;
+      border: 0;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      background: #16a34a;
+      color: #ffffff;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 16px;
+      text-align: center;
+      line-height: 1.5;
+      min-height: 24px;
+    }
+
+    .note {
+      margin-top: 18px;
+      font-size: 13px;
+      color: #667085;
+      line-height: 1.6;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+
+      <h1>ข้อมูลลูกค้า</h1>
+
+      <div class="subtitle">
+        กรุณากรอกข้อมูลให้ครบถ้วน<br>
+        เพื่อให้ทีมงานศรีกรุง S-Kurve ดูแลได้อย่างถูกต้อง
+      </div>
+
+      <form id="customerForm">
+
+        <label for="name">ชื่อ–นามสกุล</label>
+        <input
+          id="name"
+          name="name"
+          type="text"
+          placeholder="เช่น สมชาย ใจดี"
+          required
+        >
+
+        <label for="phone">เบอร์โทรศัพท์</label>
+        <input
+          id="phone"
+          name="phone"
+          type="tel"
+          inputmode="numeric"
+          placeholder="เช่น 0816861965"
+          required
+        >
+
+        <label for="line_id">LINE ID</label>
+        <input
+          id="line_id"
+          name="line_id"
+          type="text"
+          placeholder="เช่น somchai_line"
+          required
+        >
+
+        <label for="email">อีเมล</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="เช่น name@example.com"
+          required
+        >
+
+        <label for="license_plate">ทะเบียนรถ</label>
+        <input
+          id="license_plate"
+          name="license_plate"
+          type="text"
+          placeholder="เช่น กข 1234"
+          required
+        >
+
+        <label for="member_code">รหัสสมาชิกศรีกรุง</label>
+        <input
+          id="member_code"
+          name="member_code"
+          type="text"
+          placeholder="เช่น AM12345"
+          required
+        >
+
+        <button id="submitBtn" type="submit">
+          บันทึกข้อมูล
+        </button>
+
+        <div id="status"></div>
+
+      </form>
+
+      <div class="note">
+        ข้อมูลจะถูกส่งเข้าสู่ระบบเพื่อใช้ในการดูแลและให้บริการลูกค้า
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    const WEBHOOK_URL = "https://hook.eu1.make.com/oc9is5lvu6oz3fyuui707631vdk6iy4h";
+
+    const form = document.getElementById("customerForm");
+    const statusBox = document.getElementById("status");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", async function (event) {
+      event.preventDefault();
+
+      if (WEBHOOK_URL === "PASTE_MAKE_WEBHOOK_URL_HERE") {
+        statusBox.textContent = "ยังไม่ได้กำหนด Webhook URL";
+        return;
+      }
+
+      submitBtn.disabled = true;
+      statusBox.textContent = "กำลังบันทึกข้อมูล...";
+
+      const data = {
+        name: document.getElementById("name").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        line_id: document.getElementById("line_id").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        license_plate: document.getElementById("license_plate").value.trim(),
+        member_code: document.getElementById("member_code").value.trim()
+      };
+
+      try {
+        const response = await fetch(WEBHOOK_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+          throw new Error("ส่งข้อมูลไม่สำเร็จ");
+        }
+
+        statusBox.textContent = "✅ บันทึกข้อมูลเรียบร้อยแล้ว";
+        form.reset();
+
+      } catch (error) {
+        console.error(error);
+        statusBox.textContent =
+          "❌ ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง";
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+
+</body>
+</html>
