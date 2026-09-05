@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Srikrung Customer Form</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 
   <style>
     * {
@@ -188,6 +189,28 @@
     const statusBox = document.getElementById("status");
     const submitBtn = document.getElementById("submitBtn");
 
+    let lineUserId = "";
+
+async function initializeLiff() {
+  try {
+    await liff.init({ liffId: "2011453803-LqxtDqk8" });
+
+    if (!liff.isLoggedIn()) {
+      liff.login();
+      return;
+    }
+
+    const profile = await liff.getProfile();
+    lineUserId = profile.userId || "";
+
+    console.log("LINE User ID:", lineUserId);
+  } catch (error) {
+    console.error("LIFF initialization failed:", error);
+  }
+}
+
+initializeLiff();
+
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
 
@@ -205,7 +228,8 @@
         line_id: document.getElementById("line_id").value.trim(),
         email: document.getElementById("email").value.trim(),
         license_plate: document.getElementById("license_plate").value.trim(),
-        member_code: document.getElementById("member_code").value.trim()
+        member_code: document.getElementById("member_code").value.trim(),
+  line_user_id: lineUserId
       };
 
       try {
