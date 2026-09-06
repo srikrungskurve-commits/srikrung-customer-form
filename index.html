@@ -175,6 +175,16 @@
 
       </form>
 
+      <div id="successScreen" style="display:none; text-align:center; padding:70px 20px;">
+  <div style="font-size:64px; margin-bottom:18px;">✅</div>
+  <h2 style="margin:0 0 12px; font-size:28px; color:#1f2937;">
+    บันทึกข้อมูลเรียบร้อยแล้ว
+  </h2>
+  <p style="margin:0; font-size:16px; color:#667085; line-height:1.6;">
+    ข้อมูลของคุณถูกส่งเข้าสู่ระบบเรียบร้อยแล้วครับ
+  </p>
+</div>
+      
       <div class="note">
         ข้อมูลจะถูกส่งเข้าสู่ระบบเพื่อใช้ในการดูแลและให้บริการลูกค้า
       </div>
@@ -245,8 +255,10 @@ initializeLiff();
           throw new Error("ส่งข้อมูลไม่สำเร็จ");
         }
 
-        statusBox.textContent = "✅ บันทึกข้อมูลเรียบร้อยแล้ว";
-        form.reset();
+        form.style.display = "none";
+document.getElementById("successScreen").style.display = "block";
+form.reset();
+window.scrollTo({ top: 0, behavior: "smooth" });
 
       } catch (error) {
         console.error(error);
