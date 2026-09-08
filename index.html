@@ -158,6 +158,29 @@
           required
         >
 
+        <label for="chassis_number">เลขตัวถังรถ</label>
+<input
+  id="chassis_number"
+  name="chassis_number"
+  type="text"
+  placeholder="เช่น ABC123456789"
+>
+
+<label for="policy_number">เลขกรมธรรม์</label>
+<input
+  id="policy_number"
+  name="policy_number"
+  type="text"
+  placeholder="ถ้ามี"
+>
+
+<label for="expiry_date">วันหมดอายุประกัน</label>
+<input
+  id="expiry_date"
+  name="expiry_date"
+  type="date"
+>
+
         <label for="member_code">รหัสสมาชิกศรีกรุง</label>
         <input
           id="member_code"
@@ -200,6 +223,7 @@
     const submitBtn = document.getElementById("submitBtn");
 
     let lineUserId = "";
+    let lineDisplayName = "";
 
 async function initializeLiff() {
   try {
@@ -212,7 +236,7 @@ async function initializeLiff() {
 
     const profile = await liff.getProfile();
     lineUserId = profile.userId || "";
-
+    lineDisplayName = profile.displayName || "";
     console.log("LINE User ID:", lineUserId);
   } catch (error) {
     console.error("LIFF initialization failed:", error);
@@ -238,8 +262,14 @@ initializeLiff();
         line_id: document.getElementById("line_id").value.trim(),
         email: document.getElementById("email").value.trim(),
         license_plate: document.getElementById("license_plate").value.trim(),
+        chassis_number: document.getElementById("chassis_number").value.trim(),
+policy_number: document.getElementById("policy_number").value.trim(),
+expiry_date: document.getElementById("expiry_date").value,
         member_code: document.getElementById("member_code").value.trim(),
-  line_user_id: lineUserId
+        line_display_name: lineDisplayName,
+        data_source: "FORM",
+        updated_at: new Date().toISOString(),
+        line_user_id: lineUserId
       };
 
       try {
